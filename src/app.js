@@ -1,9 +1,9 @@
 const express = require('express');
 const config = require('./config');
+config(); // DO NOT MOVE DOWN
 
 const { CategoriesRoutes } = require('./api-routes');
 
-config(); // DO NOT MOVE DOWN
 // loader();
 const app = express();
 app.use(express.json());

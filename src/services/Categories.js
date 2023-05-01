@@ -1,28 +1,36 @@
 const pool = require('../loaders/db');
 
-const getAllCategoriesService = () => {
-    const SQL = `SELECT * FROM categories`;
-    return pool.query(SQL);
+const getAllCategoriesService = async () => {
+    const SQL = `SELECT * FROM Categories`;
+    [rows, fields] =  await pool.query(SQL);
+    return rows;
 };
 
-const getCategoryByIdService = (id) => {
-    const SQL = `SELECT * FROM categories WHERE id = ?`;
-    return pool.query(SQL, [id]);
+const getCategoryByIdService = async (id) => {
+    const SQL = `SELECT * FROM Categories WHERE category_id = ?`;
+    const [rows, fields] = await pool.query(SQL, [id]);
+    return rows;
 };
 
-const createCategoryService = (name) => {
-    const SQL = `INSERT INTO categories (name) VALUES (?)`;
-    return pool.query(SQL, [name]);
+const createCategoryService = async (name) => {
+    const SQL = `INSERT INTO Categories (name) VALUES (?)`;
+    return await pool.query(SQL, [name]);
 };
 
 const updateCategoryService = (id, name) => {
-    const SQL = `UPDATE categories SET name = ? WHERE id = ?`;
+    const SQL = `UPDATE categories SET name = ? WHERE category_id = ?`;
     return pool.query(SQL, [name, id]);
 };
 
 const deleteCategoryService = (id) => {
-    const SQL = `DELETE FROM categories WHERE id = ?`;
+    const SQL = `DELETE FROM Categories WHERE category_id = ?`;
     return pool.query(SQL, [id]);
+};
+
+const getCategoryByNameService = async (name) => {
+    const SQL = `SELECT * FROM Categories WHERE name = ?`;
+    const [rows, fields] = await pool.query(SQL, [name]);
+    return rows;
 };
 
 module.exports = {
@@ -31,4 +39,5 @@ module.exports = {
     createCategoryService,
     updateCategoryService,
     deleteCategoryService,
+    getCategoryByNameService,
 };
