@@ -26,5 +26,4 @@ pool.getConnection((err, connection) => {
     }
 });
 
-// pool.promise();
 module.exports = pool.promise();
