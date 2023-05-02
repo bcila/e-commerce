@@ -44,7 +44,7 @@ const createCategory = (req, res) => {
     getCategoryByNameService(name)
         .then((result) => {
             if (result.length > 0) {
-                res.status(409).json({
+                return res.status(409).json({
                     message: 'Category already exists',
                 });
             } else {

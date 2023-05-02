@@ -24,7 +24,6 @@ pool.getConnection((err, connection) => {
         connection.release();
         console.log('Connected to MySQL');
     }
-    return;
 });
 
 // pool.promise();

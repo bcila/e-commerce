@@ -7,6 +7,8 @@ const {
     updateCategory,
 } = require('../controllers/Categories');
 
+const {createCategoryLimiter} = require('../middlewares/rateLimiters');
+
 const router = express.Router();
 
 // get all categories
@@ -14,7 +16,7 @@ router.get('/', getAllCategories);
 // get category by id
 router.get('/:id', getCategoryById);
 // create category
-router.post('/', createCategory);
+router.post('/', createCategoryLimiter, createCategory);
 // update category
 router.put('/:id', updateCategory);
 // delete category
