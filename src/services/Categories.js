@@ -2,7 +2,7 @@ const pool = require('../loaders/db');
 
 const getAllCategoriesService = async () => {
     const SQL = `SELECT * FROM Categories`;
-    [rows, fields] =  await pool.query(SQL);
+    const [rows] =  await pool.query(SQL);
     return rows;
 };
 
