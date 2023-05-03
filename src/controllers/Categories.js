@@ -4,7 +4,7 @@ const {
     createCategoryService,
     deleteCategoryService,
     updateCategoryService,
-    getCategoryByNameService
+    getCategoryByNameService,
 } = require('../services/Categories');
 
 // get all categories
@@ -12,7 +12,7 @@ const getAllCategories = (req, res) => {
     getAllCategoriesService()
         .then((result) => {
             if (result.length === 0) {
-                return res.status(404).send({message: 'No categories found'});
+                return res.status(404).send({ message: 'No categories found' });
             }
             res.status(200).json(result);
         })
@@ -27,7 +27,11 @@ const getCategoryById = (req, res) => {
     getCategoryByIdService(req.params.id)
         .then((result) => {
             if (result.length === 0) {
-                return res.status(404).send({message: `Category not found with id ${req.params.id}`});
+                return res
+                    .status(404)
+                    .send({
+                        message: `Category not found with id ${req.params.id}`,
+                    });
             }
             res.status(200).json(result);
         })
@@ -41,35 +45,34 @@ const getCategoryById = (req, res) => {
 const createCategory = (req, res) => {
     let name = req.body.name;
 
-    getCategoryByNameService(name)
-        .then((result) => {
-            if (result.length > 0) {
-                return res.status(409).json({
-                    message: 'Category already exists',
-                });
-            } else {
-                createCategoryService(name)
-                    .then((result) => {
-                        res.status(200).json({
-                            message: 'Category created',
-                            result: result,
-                        });
-                    })
-                    .catch((err) => {
-                        retun
-                    res.status(500).json({
-                            message: err.message,
-                        });
+    getCategoryByNameService(name).then((result) => {
+        if (result.length > 0) {
+            return res.status(409).json({
+                message: 'Category already exists',
+            });
+        } else {
+            createCategoryService(name)
+                .then((result) => {
+                    res.status(200).json({
+                        message: 'Category created',
+                        result: result,
                     });
-            }
-        });
+                })
+                .catch((err) => {
+                    return res.status(500).json({
+                        message: err.message,
+                    });
+                });
+        }
+    });
 };
 // update category
 const updateCategory = (req, res) => {
-    updateCategoryService(req.params.id, req.body.name)
+    const { id, name } = req.body;
+    updateCategoryService(id, name)
         .then((result) => {
             res.status(200).json({
-                message: 'Category updated',
+                message: `Category updated, New Category Name is ${name}`,
             });
         })
         .catch((err) => {

@@ -18,7 +18,7 @@ const createCategoryService = async (name) => {
 };
 
 const updateCategoryService = (id, name) => {
-    const SQL = `UPDATE categories SET name = ? WHERE category_id = ?`;
+    const SQL = `UPDATE Categories SET name = ? WHERE category_id = ?`;
     return pool.query(SQL, [name, id]);
 };
 

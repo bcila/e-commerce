@@ -3,7 +3,7 @@ const config = require('./config');
 config(); // DO NOT MOVE DOWN
 
 const { CategoriesRoutes } = require('./api-routes');
-const { apiLimiter } = require('./middlewares/rateLimiters');
+const { apiLimiter } = require('./middleware/rateLimiters');
 
 // loader();
 const app = express();
