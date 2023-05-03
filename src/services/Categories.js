@@ -8,7 +8,7 @@ const getAllCategoriesService = async () => {
 
 const getCategoryByIdService = async (id) => {
     const SQL = `SELECT * FROM Categories WHERE category_id = ?`;
-    const [rows, fields] = await pool.query(SQL, [id]);
+    const [rows] = await pool.query(SQL, [id]);
     return rows;
 };
 
@@ -29,7 +29,7 @@ const deleteCategoryService = (id) => {
 
 const getCategoryByNameService = async (name) => {
     const SQL = `SELECT * FROM Categories WHERE name = ?`;
-    const [rows, fields] = await pool.query(SQL, [name]);
+    const [rows] = await pool.query(SQL, [name]);
     return rows;
 };
 
