@@ -7,9 +7,12 @@ const {
     getCategoryByNameService,
 } = require('../services/Categories');
 
+const CategoryService = require('../services/CategoriesV2')
+const categoryService = new CategoryService();
+
 // get all categories
 const getAllCategories = (req, res) => {
-    getAllCategoriesService()
+    categoryService.getAllCategories()
         .then((result) => {
             if (result.length === 0) {
                 return res.status(404).send({ message: 'No categories found' });
@@ -24,7 +27,7 @@ const getAllCategories = (req, res) => {
 };
 // get category by id
 const getCategoryById = (req, res) => {
-    getCategoryByIdService(req.params.id)
+    categoryService.getCategoryById(req.params.id)
         .then((result) => {
             if (result.length === 0) {
                 return res
