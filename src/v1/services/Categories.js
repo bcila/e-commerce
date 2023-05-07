@@ -1,4 +1,4 @@
-const pool = require('../loaders/db');
+const pool = require('../../loaders/db');
 
 const getAllCategoriesService = async () => {
     const SQL = `SELECT * FROM Categories ORDER BY category_id`;
