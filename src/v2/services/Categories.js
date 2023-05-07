@@ -53,6 +53,7 @@ class CategoryService {
         }
     }
     /**
+     * 
      * @param {Number} id
      * @param {String} newName
      * @returns
@@ -65,6 +66,11 @@ class CategoryService {
         return result;
     }
 
+    /**
+     * 
+     * @param {*} id 
+     * @returns 
+     */
     async deleteCategory(id) {
         const SQL = 'DELETE FROM Categories WHERE category_id = ?';
         const connection = await this.pool.getConnection();
