@@ -1,4 +1,4 @@
-const pool = require('../../loaders/db');
+const pool = require('../loaders/db');
 
 class CategoryService {
     constructor() {

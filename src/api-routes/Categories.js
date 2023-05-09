@@ -1,15 +1,8 @@
 const express = require('express');
-const {
-    // getAllCategories,
-    getCategoryById,
-    createCategory,
-    deleteCategory,
-    updateCategory,
-} = require('../controllers/Categories');
 
-const categoryController = require('../../v2/controllers/Categories');
+const categoryController = require('../controllers/Categories');
 
-const {createCategoryLimiter} = require('../../middleware/rateLimiters');
+const {createCategoryLimiter} = require('../middleware/rateLimiters');
 
 const router = express.Router();
 

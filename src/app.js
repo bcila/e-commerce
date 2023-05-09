@@ -4,7 +4,7 @@ const errorHandler = require('./middleware/errorHandler');
 const config = require('./config');
 config(); // DO NOT MOVE DOWN
 
-const { CategoriesRoutes } = require('./v1/api-routes');
+const { CategoriesRoutes } = require('./api-routes');
 const { apiLimiter } = require('./middleware/rateLimiters');
 
 // loader();
