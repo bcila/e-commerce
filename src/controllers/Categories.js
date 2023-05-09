@@ -54,11 +54,18 @@ exports.createCategory = async (req, res, next) => {
             });
         }
         const result = await categoryService.createCategory(name);
-        res.status(201).json({
-            success: true,
-            insertId: result.insertId,
-            message: `Category '${name}' is created`,
-        });
+        if (result.insertId) {
+            res.status(201).json({
+                success: true,
+                insertId: result.insertId,
+                message: `Category '${name}' is created`,
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: 'Category cannot be inserted'
+            })
+        }
     } catch (error) {
         next(error);
     }
@@ -74,16 +81,12 @@ exports.updateCategory = async (req, res, next) => {
         if (result.changedRows > 0) {
             res.status(200).json({
                 success: true,
-                affectedRows: result.affectedRows,
-                changedRows: result.changedRows,
                 info: result.info,
                 message: `New category name is '${name}'`,
             });
         } else {
             return res.status(304).json({
                 success: false,
-                affectedRows: result.affectedRows,
-                changedRows: result.changedRows,
                 info: result.info,
             });
         }
@@ -100,7 +103,7 @@ exports.deleteCategory = async (req, res, next) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 success: true,
-                message: `Category with id '${id}' is deleted`,
+                message: 'Category is deleted',
             });
         } else {
             return res.status(404).json({
