@@ -13,7 +13,7 @@ router.get('/:id', subCategoriesController.getSubCategoryById);
 // create sub category
 router.post('/', createCategoryLimiter, subCategoriesController.createSubCategory);
 // update sub category
-router.put('/', subCategoriesController.updateSubCategory);
+router.put('/:id', subCategoriesController.updateSubCategory);
 // delete sub category
 router.delete('/:id', subCategoriesController.deleteSubCategory);
 

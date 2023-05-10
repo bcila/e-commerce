@@ -77,14 +77,15 @@ exports.updateSubCategory = async (req, res, next) => {
     try {
         // localhost:8000/subcategories/15?new-name=telefon
         const { id } = req.params;
-        const { newName } = req.query['new-name'];
-        const result = await subCategoryService.updateSubCategory(id, newName);
+        const { newname } = req.query;
+        console.log(req.query);
+        const result = await subCategoryService.updateSubCategory(id, newname);
 
         if (result.changedRows > 0) {
             res.status(200).json({
                 success: true,
                 info: result.info,
-                message: `New sub category name is '${newName}'`,
+                message: `New sub category name is '${newname}'`,
             });
         } else {
             return res.status(304).json({

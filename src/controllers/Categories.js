@@ -74,15 +74,15 @@ exports.createCategory = async (req, res, next) => {
 exports.updateCategory = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name } = req.body;
+        const { newname } = req.query;
 
-        const result = await categoryService.updateCategory(id, name);
+        const result = await categoryService.updateCategory(id, newname);
 
         if (result.changedRows > 0) {
             res.status(200).json({
                 success: true,
                 info: result.info,
-                message: `New category name is '${name}'`,
+                message: `New category name is '${newname}'`,
             });
         } else {
             return res.status(304).json({

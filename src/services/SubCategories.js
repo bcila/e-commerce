@@ -55,6 +55,7 @@ class SubCategoryService {
         }
     }
     async updateSubCategory(id, newName) {
+        console.log('asd',newName);
         try {
             const SQL =
                 'UPDATE Sub_Categories SET name = ? WHERE sub_category_id= ?';
@@ -63,7 +64,7 @@ class SubCategoryService {
             connection.release();
             return rows;
         } catch (error) {
-            throw new Error(error.message);
+            throw new Error(error);
         }
     }
 
