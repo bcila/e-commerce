@@ -6,7 +6,7 @@ exports.getSubCategories = async (req, res, next) => {
         const result = await subCategoryService.getSubCategories();
 
         if (result.length === 0) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 message: 'No Sub Categories found',
             });
@@ -25,10 +25,10 @@ exports.getSubCategories = async (req, res, next) => {
 exports.getSubCategoryById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const result = subCategoryService.getSubCategoryById(id);
+        const result = await subCategoryService.getSubCategoryById(id);
 
         if (result.length === 0) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 message: 'No Sub Category found',
             });
@@ -48,13 +48,14 @@ exports.createSubCategory = async (req, res, next) => {
 
         const subCategory = await subCategoryService.getSubCategoryByName(name);
         if (subCategory.length > 0) {
-            res.status(409).json({
+            return res.status(409).json({
                 success: false,
                 message: 'Sub category already exist',
             });
         }
-        const result = subCategoryService.createSubCategory(name, categoryId);
+        const result = await subCategoryService.createSubCategory(name, categoryId);
 
+        console.log(result);
         if (result.insertId) {
             res.status(201).json({
                 success: true,
@@ -62,7 +63,7 @@ exports.createSubCategory = async (req, res, next) => {
                 message: `Sub category '${name}' is created.`,
             });
         } else {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: 'Sub category cannot be inserted'
             })
@@ -77,7 +78,7 @@ exports.updateSubCategory = async (req, res, next) => {
         // localhost:8000/subcategories/15?new-name=telefon
         const { id } = req.params;
         const { newName } = req.query['new-name'];
-        const result = subCategoryService.updateSubCategory(id, newName);
+        const result = await subCategoryService.updateSubCategory(id, newName);
 
         if (result.changedRows > 0) {
             res.status(200).json({
@@ -99,12 +100,16 @@ exports.updateSubCategory = async (req, res, next) => {
 exports.deleteSubCategory = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const result = subCategoryService.deleteSubCategory(id);
+        const result = await subCategoryService.deleteSubCategory(id);
         if(result.affectedRows > 0) {
             res.status(200).json({
                 success: true,
                 message:"Sub category is deleted",
             });
+        } else {
+            return res.status(404).json({
+                success: false,
+            })
         }
     } catch (error) {
         next(error);
