@@ -1,43 +1,83 @@
 const pool = require('../loaders/db');
 
-const getAllCategoriesService = async () => {
-    const SQL = `SELECT * FROM Categories`;
-    const [rows] =  await pool.query(SQL);
-    return rows;
-};
+class CategoryService {
+    constructor() {
+        this.pool = pool;
+    }
 
-const getCategoryByIdService = async (id) => {
-    const SQL = `SELECT * FROM Categories WHERE category_id = ?`;
-    const [rows] = await pool.query(SQL, [id]);
-    return rows;
-};
+    async getAllCategories() {
+        try {
+            const SQL = 'SELECT * FROM Categories ORDER BY category_id';
+            const connection = await this.pool.getConnection();
+            const [rows] = await connection.query(SQL);
+            connection.release();
+            return rows;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
 
-const createCategoryService = async (name) => {
-    const SQL = `INSERT INTO Categories (name) VALUES (?)`;
-    return await pool.query(SQL, [name]);
-};
+    async getCategoryById(id) {
+        try {
+            const SQL = 'SELECT * FROM Categories WHERE category_id = ?';
+            const connection = await this.pool.getConnection();
+            const [rows] = await connection.query(SQL, [id]);
+            connection.release();
+            return rows;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
 
-const updateCategoryService = (id, name) => {
-    const SQL = `UPDATE Categories SET name = ? WHERE category_id = ?`;
-    return pool.query(SQL, [name, id]);
-};
+    async getCategoryByName(name) {
+        try {
+            const SQL = 'SELECT * FROM Categories WHERE name = ?';
+            const connection = await this.pool.getConnection();
+            const [rows] = await connection.query(SQL, [name]);
+            connection.release();
+            return rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 
-const deleteCategoryService = (id) => {
-    const SQL = `DELETE FROM Categories WHERE category_id = ?`;
-    return pool.query(SQL, [id]);
-};
+    async createCategory(name) {
+        try {
+            const SQL = 'INSERT INTO Categories (name) VALUES (?)';
+            const connection = await this.pool.getConnection();
+            const [rows] = await connection.query(SQL, [name]);
+            connection.release();
+            return rows;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    /**
+     * 
+     * @param {Number} id
+     * @param {String} newName
+     * @returns
+     */
+    async updateCategory(id, newName) {
+        const SQL = 'UPDATE Categories SET name = ? WHERE category_id = ?';
+        const connection = await this.pool.getConnection();
+        const [result] = await connection.query(SQL, [newName, id]);
+        connection.release();
+        return result;
+    }
 
-const getCategoryByNameService = async (name) => {
-    const SQL = `SELECT * FROM Categories WHERE name = ?`;
-    const [rows] = await pool.query(SQL, [name]);
-    return rows;
-};
+    /**
+     * 
+     * @param {*} id 
+     * @returns 
+     */
+    async deleteCategory(id) {
+        const SQL = 'DELETE FROM Categories WHERE category_id = ?';
+        const connection = await this.pool.getConnection();
+        const [result] = await connection.query(SQL, [id]);
+        connection.release();
+        return result;
+    }
+}
 
-module.exports = {
-    getAllCategoriesService,
-    getCategoryByIdService,
-    createCategoryService,
-    updateCategoryService,
-    deleteCategoryService,
-    getCategoryByNameService,
-};
+module.exports = CategoryService;

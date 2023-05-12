@@ -1,16 +1,17 @@
-const CategoryService = require('../services/Categories');
-const categoryService = new CategoryService();
+const SubCategoryService = require('../services/SubCategories');
+const subCategoryService = new SubCategoryService();
 
-exports.getAllCategories = async (req, res, next) => {
+exports.getSubCategories = async (req, res, next) => {
     try {
-        const result = await categoryService.getAllCategories();
+        const result = await subCategoryService.getSubCategories();
 
         if (result.length === 0) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
-                message: 'No categories found',
+                message: 'No Sub Categories found',
             });
         }
+
         res.status(200).json({
             success: true,
             count: result.length,
@@ -21,18 +22,18 @@ exports.getAllCategories = async (req, res, next) => {
     }
 };
 
-exports.getCategoryById = async (req, res, next) => {
+exports.getSubCategoryById = async (req, res, next) => {
     try {
         const { id } = req.params;
-
-        const result = await categoryService.getCategoryById(id);
+        const result = await subCategoryService.getSubCategoryById(id);
 
         if (result.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: `No category found with id ${id}`,
+                message: 'No Sub Category found',
             });
         }
+
         res.status(200).json({
             success: true,
             data: result,
@@ -41,29 +42,30 @@ exports.getCategoryById = async (req, res, next) => {
         next(error);
     }
 };
-
-exports.createCategory = async (req, res, next) => {
+exports.createSubCategory = async (req, res, next) => {
     try {
-        const { name } = req.body;
-        const category = await categoryService.getCategoryByName(name);
+        const { name, categoryId } = req.body;
 
-        if (category.length > 0) {
+        const subCategory = await subCategoryService.getSubCategoryByName(name);
+        if (subCategory.length > 0) {
             return res.status(409).json({
                 success: false,
-                message: 'Category already exists',
+                message: 'Sub category already exist',
             });
         }
-        const result = await categoryService.createCategory(name);
+        const result = await subCategoryService.createSubCategory(name, categoryId);
+
+        console.log(result);
         if (result.insertId) {
             res.status(201).json({
                 success: true,
                 insertId: result.insertId,
-                message: `Category '${name}' is created`,
+                message: `Sub category '${name}' is created.`,
             });
         } else {
             return res.status(500).json({
                 success: false,
-                message: 'Category cannot be inserted'
+                message: 'Sub category cannot be inserted'
             })
         }
     } catch (error) {
@@ -71,18 +73,19 @@ exports.createCategory = async (req, res, next) => {
     }
 };
 
-exports.updateCategory = async (req, res, next) => {
+exports.updateSubCategory = async (req, res, next) => {
     try {
+        // localhost:8000/subcategories/15?new-name=telefon
         const { id } = req.params;
         const { newname } = req.query;
-
-        const result = await categoryService.updateCategory(id, newname);
+        console.log(req.query);
+        const result = await subCategoryService.updateSubCategory(id, newname);
 
         if (result.changedRows > 0) {
             res.status(200).json({
                 success: true,
                 info: result.info,
-                message: `New category name is '${newname}'`,
+                message: `New sub category name is '${newname}'`,
             });
         } else {
             return res.status(304).json({
@@ -95,22 +98,21 @@ exports.updateCategory = async (req, res, next) => {
     }
 };
 
-exports.deleteCategory = async (req, res, next) => {
+exports.deleteSubCategory = async (req, res, next) => {
     try {
         const { id } = req.params;
-
-        const result = await categoryService.deleteCategory(id);
-        if (result.affectedRows > 0) {
+        const result = await subCategoryService.deleteSubCategory(id);
+        if(result.affectedRows > 0) {
             res.status(200).json({
                 success: true,
-                message: 'Category is deleted',
+                message:"Sub category is deleted",
             });
         } else {
             return res.status(404).json({
                 success: false,
-            });
+            })
         }
     } catch (error) {
         next(error);
     }
-};
+}
