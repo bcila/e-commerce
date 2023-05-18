@@ -4,7 +4,7 @@ const errorHandler = require('./middleware/errorHandler');
 const config = require('./config');
 config(); // DO NOT MOVE DOWN
 
-const { CategoriesRoutes, SubCategoriesRoutes } = require('./api-routes');
+const { CategoriesRoutes, SubCategoriesRoutes, ProductsRoutes } = require('./api-routes');
 const { apiLimiter } = require('./middleware/rateLimiters');
 
 // loader();
@@ -18,4 +18,5 @@ app.listen(process.env.APP_PORT || 8085, () => {
     console.log(`Server running on ${process.env.APP_PORT || 8085}`);
     app.use('/api/categories', CategoriesRoutes);
     app.use('/api/sub-categories', SubCategoriesRoutes);
+    app.use('/api/products', ProductsRoutes);
 });

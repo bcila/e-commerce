@@ -16,6 +16,7 @@ class ProductsService {
             throw new Error(error.message);
         }
     }
+
     async getProductById(id) {
         try {
             const SQL = 'SELECT * FROM Products WHERE product_id = ?';
@@ -27,6 +28,7 @@ class ProductsService {
             throw new Error(error.message);
         }
     }
+
     async getProductByIdByName(name) {
         try {
             const SQL = 'SELECT * FROM Products WHERE name = ?';
@@ -38,6 +40,7 @@ class ProductsService {
             throw new Error(error.message);
         }
     }
+
     async createProduct(
         name,
         description,
@@ -64,6 +67,7 @@ class ProductsService {
             throw new Error(error.message);
         }
     }
+
     async updateProduct(
         product_id,
         name,
@@ -90,6 +94,7 @@ class ProductsService {
             return rows;
         } catch (error) {}
     }
+    
     async deleteProduct(product_id) {
         try {
             const SQL = 'DELETE FROM Products WHERE product_id = ?';

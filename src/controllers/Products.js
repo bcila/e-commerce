@@ -1,3 +1,4 @@
+const { log } = require('console');
 const ProductsService = require('../services/Products');
 const productsService = new ProductsService();
 
@@ -53,6 +54,9 @@ exports.createProduct = async (req, res, next) => {
             category_id,
             sub_category_id,
         } = req.body;
+        let uploadedImage = req.files.image
+        let uploadPath = __dirname + '/../public/uploads/' + uploadedImage.name;
+        console.log(req.files);
         const product = await productsService.getProductByIdByName(name);
 
         if (product.length > 0) {
@@ -60,27 +64,28 @@ exports.createProduct = async (req, res, next) => {
                 success: false,
                 message: 'Product already exists',
             });
-        }
-        const result = await productsService.createProduct(
-            name,
-            description,
-            price,
-            image_url,
-            category_id,
-            sub_category_id
-        );
-        if (result.insertId) {
-            res.status(201).json({
-                success: true,
-                insertId: result.insertId,
-                message: `Product '${name}' is created`,
-            });
-        } else {
-            return res.status(500).json({
-                success: false,
-                message: 'Product cannot be inserted',
-            });
-        }
+        } 
+        // const result = await productsService.createProduct(
+        //     name,
+        //     description,
+        //     price,
+        //     image_url,
+        //     category_id,
+        //     sub_category_id
+        // );
+        // if (result.insertId) {
+        //     res.status(201).json({
+        //         success: true,
+        //         insertId: result.insertId,
+        //         message: `Product '${name}' is created`,
+        //     });
+        // } else {
+        //     return res.status(500).json({
+        //         success: false,
+        //         message: 'Product cannot be inserted',
+        //     });
+        // }
+        res.status(200).json(req.files)
     } catch (error) {
         next(error);
     }
