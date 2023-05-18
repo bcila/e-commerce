@@ -1,10 +1,11 @@
 const { log } = require('console');
-const ProductsService = require('../services/Products');
-const productsService = new ProductsService();
+const ProductService = require('../services/Products');
+const productService = new ProductService();
+const fs = require('fs');
 
 exports.getAllProducts = async (req, res, next) => {
     try {
-        const result = await productsService.getAllProducts();
+        const result = await productService.getAllProducts();
 
         if (result.length === 0) {
             res.status(404).json({
@@ -26,7 +27,7 @@ exports.getProductById = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const result = await productsService.getProductById(id);
+        const result = await productService.getProductById(id);
 
         if (result.length === 0) {
             return res.status(404).json({
@@ -42,74 +43,101 @@ exports.getProductById = async (req, res, next) => {
         next(error);
     }
 };
-
 exports.createProduct = async (req, res, next) => {
-    //BCila Adamdır Düzeltir
     try {
-        const {
-            name,
-            description,
-            price,
-            image_url,
-            category_id,
-            sub_category_id,
-        } = req.body;
-        let uploadedImage = req.files.image
-        let uploadPath = __dirname + '/../public/uploads/' + uploadedImage.name;
-        console.log(req.files);
-        const product = await productsService.getProductByIdByName(name);
+        const { name, description, price, category_id, sub_category_id } =
+            req.body;
+
+        const image_url = req.file.filename;
+
+        const product = await productService.getProductByName(name);
 
         if (product.length > 0) {
             return res.status(409).json({
                 success: false,
                 message: 'Product already exists',
             });
-        } 
-        // const result = await productsService.createProduct(
-        //     name,
-        //     description,
-        //     price,
-        //     image_url,
-        //     category_id,
-        //     sub_category_id
-        // );
-        // if (result.insertId) {
-        //     res.status(201).json({
-        //         success: true,
-        //         insertId: result.insertId,
-        //         message: `Product '${name}' is created`,
-        //     });
-        // } else {
-        //     return res.status(500).json({
-        //         success: false,
-        //         message: 'Product cannot be inserted',
-        //     });
-        // }
-        res.status(200).json(req.files)
+        }
+        const result = await productService.createProduct(
+            name,
+            description,
+            price,
+            image_url,
+            category_id,
+            sub_category_id
+        );
+        if (result.insertId) {
+            res.status(201).json({
+                success: true,
+                insertId: result.insertId,
+                message: `Product '${name}' is created`,
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: 'Product cannot be inserted',
+            });
+        }
     } catch (error) {
         next(error);
     }
 };
 
 exports.updateProduct = async (req, res, next) => {
-    //Bcila Adamdır Düzeltir
-    try {
-        const { product_id } = req.params;
-        const {
-            name,
-            description,
-            price,
-            image_url,
-            category_id,
-            sub_category_id,
-        } = req.query;
+    const imagePath = 'src/public/uploads/';
+    let updateImg = false;
 
-        const result = await productsService.updateProduct(
-            product_id,
+    try {
+        const { id } = req.params;
+        let { name, description, price, category_id, sub_category_id } =
+            req.body;
+
+        const product = await productService.getProductById(id);
+        if (product.length === 0) {
+            return;
+        }
+
+        if (req.file) {
+            updateImg = true;
+        }
+
+        const new_image_url = updateImg ? req.file.filename : product.image_url;
+
+        if (updateImg) {
+            const old_image_url = await productService.getOldImageUrl(id);
+            if (old_image_url) {
+                fs.unlink(imagePath + product.image_url, (err) => {
+                    if (err) {
+                        next(err);
+                    } else {
+                        console.log('Old image deleted');
+                    }
+                });
+            }
+        }
+
+        if (!name) {
+            name = product.name;
+        }
+        if (!description) {
+            description = product.description;
+        }
+        if (!price) {
+            price = product.price;
+        }
+        if (!category_id) {
+            category_id = product.category_id;
+        }
+        if (!sub_category_id) {
+            sub_category_id = product.sub_category_id;
+        }
+
+        const result = await productService.updateProduct(
+            id,
             name,
             description,
             price,
-            image_url,
+            new_image_url,
             category_id,
             sub_category_id
         );
@@ -135,7 +163,7 @@ exports.deleteProduct = async (req, res, next) => {
     try {
         const { product_id } = req.params;
 
-        const result = await productsService.deleteProduct(product_id);
+        const result = await productService.deleteProduct(product_id);
         if (result.affectedRows > 0) {
             res.status(200).json({
                 success: true,
