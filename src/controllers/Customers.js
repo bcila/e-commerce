@@ -1,4 +1,4 @@
-const CustomerService = require('../services/Customers');
+const { CustomerService } = require('../services/Customers');
 const customerService = new CustomerService();
 const bcrypt = require('bcrypt');
 
@@ -55,7 +55,7 @@ exports.createCustomer = async (req, res, next) => {
             });
         }
 
-        const password_hash = bcrypt.hashSync('dummy', 10);
+        const password_hash = generatePasswordHash(password);
 
         const result = await customerService.createCustomer(
             first_name,
@@ -83,10 +83,11 @@ exports.createCustomer = async (req, res, next) => {
 // düzenlenecek
 exports.updateCustomer = async (req, res, next) => {
     try {
-        const password_hash = bcrypt.hashSync('dummy', 10);
         const { id } = req.params;
         const { first_name, last_name, email, password, phone_number } =
             req.body;
+
+        const password_hash = generatePasswordHash(password);
 
         const result = await customerService.updateCustomer(
             id,
@@ -96,6 +97,7 @@ exports.updateCustomer = async (req, res, next) => {
             password_hash,
             phone_number
         );
+
         if (result.affectedRows > 0) {
             if (result.changedRows > 0) {
                 res.status(200).json({
@@ -134,12 +136,12 @@ exports.deleteCustomer = async (req, res, next) => {
     }
 };
 
-function generatePasswordHash (password) {
+function generatePasswordHash(password) {
     bcrypt.genSalt(12, (err, salt) => {
-        if (err) return(err);
-        bcrypt.hash(password, salt,(err, hash) => {
-            if (err) return(err);
+        if (err) return err;
+        bcrypt.hash(password, salt, (err, hash) => {
+            if (err) return err;
             return hash;
-        })
-    })
+        });
+    });
 }
