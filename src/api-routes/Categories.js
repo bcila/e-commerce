@@ -2,7 +2,7 @@ const express = require('express');
 
 const categoryController = require('../controllers/Categories');
 
-const {createCategoryLimiter} = require('../middleware/rateLimiters');
+const { createCategoryLimiter } = require('../middleware/rateLimiters');
 
 const router = express.Router();
 
