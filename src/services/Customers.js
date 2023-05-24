@@ -1,10 +1,33 @@
 const pool = require('../loaders/db');
-
-class CustomerService {
+const { ROLES } = require('../utils/constants');
+class UserService {
     constructor() {
         this.pool = pool;
     }
+    async getRole() {
+        return this.role;
+    }
+}
 
+class AdminService extends UserService {
+    constructor() {
+        super();
+        this.role = ROLES.ADMIN;
+    }
+}
+
+class ModeratorService extends UserService {
+    constructor() {
+        super();
+        this.role = ROLES.MODERATOR;
+    }
+}
+
+class CustomerService extends UserService {
+    constructor() {
+        super();
+        this.role = ROLES.CUSTOMER;
+    }
     async getAllCustomers() {
         try {
             const SQL = 'SELECT * FROM Customers';
@@ -99,4 +122,8 @@ class CustomerService {
         }
     }
 }
-module.exports = CustomerService;
+module.exports = {
+    AdminService,
+    ModeratorService,
+    CustomerService,
+};

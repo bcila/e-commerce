@@ -1,6 +1,6 @@
 const CustomerService = require('../services/Customers');
 const customerService = new CustomerService();
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 exports.getAllCustomers = async (req, res, next) => {
     try {
@@ -44,8 +44,6 @@ exports.getCustomerById = async (req, res, next) => {
 //düzenlenecek (password vs gibi)
 exports.createCustomer = async (req, res, next) => {
     try {
-        const password_hash = bcrypt.hashSync('dummy', 10);
-
         const { first_name, last_name, email, password, phone_number } =
             req.body;
         const customer = await customerService.getCustomerByEmail(email);
@@ -56,6 +54,9 @@ exports.createCustomer = async (req, res, next) => {
                 message: 'Customer already exists',
             });
         }
+
+        const password_hash = bcrypt.hashSync('dummy', 10);
+
         const result = await customerService.createCustomer(
             first_name,
             last_name,
@@ -132,3 +133,13 @@ exports.deleteCustomer = async (req, res, next) => {
         next(error);
     }
 };
+
+function generatePasswordHash (password) {
+    bcrypt.genSalt(12, (err, salt) => {
+        if (err) return(err);
+        bcrypt.hash(password, salt,(err, hash) => {
+            if (err) return(err);
+            return hash;
+        })
+    })
+}
