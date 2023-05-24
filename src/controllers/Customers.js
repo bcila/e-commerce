@@ -1,5 +1,6 @@
 const CustomerService = require('../services/Customers');
 const customerService = new CustomerService();
+const bcrypt = require('bcryptjs');
 
 exports.getAllCustomers = async (req, res, next) => {
     try {
@@ -43,15 +44,11 @@ exports.getCustomerById = async (req, res, next) => {
 //düzenlenecek (password vs gibi)
 exports.createCustomer = async (req, res, next) => {
     try {
+        const password_hash = bcrypt.hashSync('dummy', 10);
+
         const { first_name, last_name, email, password, phone_number } =
             req.body;
-        const customer = await customerService.getCustomerByName(
-            first_name,
-            last_name,
-            email,
-            password,
-            phone_number
-        );
+        const customer = await customerService.getCustomerByEmail(email);
 
         if (customer.length > 0) {
             return res.status(409).json({

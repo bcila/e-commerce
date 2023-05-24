@@ -29,6 +29,18 @@ class CustomerService {
         }
     }
 
+    async getCustomerByEmail(email) {
+        try {
+            const SQL = 'SELECT * FROM Customers WHERE email = ?';
+            const connection = await this.pool.getConnection();
+            const [rows] = await connection.query(SQL, [email]);
+            connection.release();
+            return rows[0];
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
     async createCustomer(first_name, last_name, email, password, phone_number) {
         try {
             const SQL =
