@@ -63,8 +63,8 @@ exports.createCategory = async (req, res, next) => {
         } else {
             return res.status(500).json({
                 success: false,
-                message: 'Category cannot be inserted'
-            })
+                message: 'Category cannot be inserted',
+            });
         }
     } catch (error) {
         next(error);

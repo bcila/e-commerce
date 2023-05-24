@@ -60,7 +60,7 @@ exports.createCustomer = async (req, res, next) => {
             first_name,
             last_name,
             email,
-            password,
+            password_hash,
             phone_number
         );
         if (result.insertId) {
@@ -82,16 +82,17 @@ exports.createCustomer = async (req, res, next) => {
 // düzenlenecek
 exports.updateCustomer = async (req, res, next) => {
     try {
+        const password_hash = bcrypt.hashSync('dummy', 10);
         const { id } = req.params;
         const { first_name, last_name, email, password, phone_number } =
             req.body;
 
         const result = await customerService.updateCustomer(
-            customer_id,
+            id,
             first_name,
             last_name,
             email,
-            password,
+            password_hash,
             phone_number
         );
         if (result.affectedRows > 0) {
